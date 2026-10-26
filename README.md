@@ -1,2 +1,2 @@
 # Instant-Insanity
-october 2026, the best math research to ever exist
+october 2026, the best math research project to ever exist
