@@ -985,6 +985,11 @@
     else console.info(`Instant Insanity self-test: all ${results.length} checks passed.`);
 
     newScramble();
+
+    // Title card on every visit; any tap (or Escape) dismisses it.
+    const intro = $('#intro-dialog');
+    intro.addEventListener('click', () => closeDialog(intro));
+    openDialog(intro);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

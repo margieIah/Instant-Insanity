@@ -217,6 +217,22 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
 dialog h2 { font-size: 1.4rem; margin-bottom: 8px; }
 dialog .row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
 dialog .big { font-size: 1.3rem; margin: 6px 0; }
+.intro { padding: 32px 24px 24px; cursor: pointer; }
+.intro::backdrop { background: rgba(0, 0, 0, 0.8); }
+.intro-cubes { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
+.intro-cubes span {
+  width: 34px; height: 34px; border-radius: 8px; border: 3px solid #16171c;
+  animation: intro-bob 1.6s ease-in-out infinite;
+}
+.intro-cubes span:nth-child(2) { animation-delay: 0.15s; }
+.intro-cubes span:nth-child(3) { animation-delay: 0.3s; }
+.intro-cubes span:nth-child(4) { animation-delay: 0.45s; }
+@keyframes intro-bob { 50% { transform: translateY(-8px) rotate(8deg); } }
+.intro-kicker { margin: 0; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.8rem; font-weight: 650; }
+dialog.intro h2 { font-size: clamp(1.8rem, 7vw, 2.4rem); margin: 6px 0 8px; }
+.intro-sub { font-size: 1.1rem; margin: 0 0 22px; }
+.intro button { min-width: 200px; min-height: 52px; font-size: 1.1rem; }
+.intro-tip { margin: 12px 0 0; color: var(--muted); font-size: 0.85rem; }
 .record { color: var(--ok); font-weight: 700; min-height: 1.5em; }
 #win-dialog { position: fixed; overflow: hidden; }
 #confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
