@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Instant Insanity: stack four colored cubes so every side shows red, green, blue and white exactly once.">
+  <meta name="theme-color" content="#14151b">
+  <title>Instant Insanity</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#controls">Skip to controls</a>
+  <header class="topbar">
+    <h1>Instant Insanity</h1>
+    <nav aria-label="Pages">
+      <a href="index.html" aria-current="page">Play</a>
+      <a href="math.html">The Math</a>
+      <button type="button" id="btn-share" class="ghost">Share / QR</button>
+    </nav>
+  </header>
+
+  <main class="game">
+    <section class="stats" aria-label="Score">
+      <div><span class="k">Moves</span><span class="v" id="stat-moves">0</span></div>
+      <div><span class="k">Time</span><span class="v" id="stat-time" role="timer">00:00</span></div>
+      <div><span class="k">Swaps</span><span class="v" id="stat-swaps">0</span></div>
+      <div><span class="k">Undos</span><span class="v" id="stat-undos">0</span></div>
+      <div><span class="k">Hints</span><span class="v" id="stat-hints">0</span></div>
+      <div class="best"><span class="k">Best</span><span class="v" id="stat-best">—</span></div>
+    </section>
+
+    <section class="viewer" aria-label="3D tower">
+      <div id="scene">
+        <p class="fallback">The 3D view needs WebGL and an internet connection for three.js.
+          You can still play using the Four Sides panel and the buttons.</p>
+      </div>
+      <p class="tip">Drag to orbit · tap a cube to select · swipe a selected cube to turn it · pinch to zoom</p>
+      <p id="solved-banner" class="solved" hidden>Solved! Start a new scramble or reset to try again.</p>
+    </section>
+
+    <section class="sides card" aria-labelledby="sides-title">
+      <h2 id="sides-title">Four Sides</h2>
+      <p class="sub">Top of the tower first. Each column needs R, G, B, W once. Repeats are outlined in red.</p>
+      <table class="sides-table">
+        <thead><tr id="sides-head"></tr></thead>
+        <tbody id="sides-body"></tbody>
+      </table>
+    </section>
+
+    <section id="controls" class="controls card" aria-label="Controls">
+      <div class="chips" id="cube-chips" role="group" aria-label="Select a cube"></div>
+      <p class="selected" id="selected-label" aria-live="polite">Tap a cube to select it</p>
+
+      <div class="moves" role="group" aria-label="Turn the selected cube (each press is one move)">
+        <button type="button" data-move="tiltF"><span class="ico" aria-hidden="true">⤓</span>Tilt forward</button>
+        <button type="button" data-move="tiltB"><span class="ico" aria-hidden="true">⤒</span>Tilt back</button>
+        <button type="button" data-move="rollL"><span class="ico" aria-hidden="true">↶</span>Roll left</button>
+        <button type="button" data-move="rollR"><span class="ico" aria-hidden="true">↷</span>Roll right</button>
+        <button type="button" data-move="spinCW"><span class="ico" aria-hidden="true">↻</span>Spin clockwise</button>
+        <button type="button" data-move="spinCCW"><span class="ico" aria-hidden="true">↺</span>Spin counter&#8209;clockwise</button>
+      </div>
+
+      <div class="swaps" role="group" aria-label="Change the cube order (counted as swaps, not moves)">
+        <button type="button" id="btn-up" class="secondary">Swap up ▲</button>
+        <button type="button" id="btn-down" class="secondary">Swap down ▼</button>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="btn-new" class="primary">New Scramble</button>
+        <button type="button" id="btn-reset" class="secondary">Reset</button>
+        <button type="button" id="btn-undo" class="secondary">Undo</button>
+        <button type="button" id="btn-hint" class="secondary">Hint</button>
+      </div>
+      <button type="button" id="btn-solve" class="secondary solve">Show shortest solution</button>
+      <p id="hint-text" class="hint" aria-live="polite"></p>
+
+      <div id="solution" class="solution" hidden>
+        <h3 id="solution-title">Shortest solution</h3>
+        <p class="sub">From where the cubes are right now. No scramble ever needs more than 8 moves.
+          Using the solver means this round won't count toward your best.</p>
+        <ol id="solution-steps" class="steps"></ol>
+        <div class="solution-actions">
+          <button type="button" id="btn-play" class="primary">Play it</button>
+          <button type="button" id="btn-solution-close" class="secondary">Hide</button>
+        </div>
+      </div>
+
+      <label class="toggle">
+        <input type="checkbox" id="opt-letters">
+        <span>Show letters on faces (colorblind-friendly)</span>
+      </label>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Spin about the vertical axis, tilt toward/away from you, roll left/right. Keys: 1–4 select · W/S tilt · A/D roll · Q/E spin · Z undo.</p>
+    <p><button type="button" id="btn-test" class="link">Run self-test</button> · <a href="math.html">The math behind it →</a></p>
+  </footer>
+
+  <div id="live" class="sr-only" aria-live="polite"></div>
+
+  <dialog id="win-dialog" aria-labelledby="win-title">
+    <div id="confetti" aria-hidden="true"></div>
+    <h2 id="win-title">Solved! 🎉</h2>
+    <p class="big"><strong id="win-moves">0</strong> moves in <strong id="win-time">00:00</strong></p>
+    <p id="win-extra" class="sub"></p>
+    <p id="win-record" class="record"></p>
+    <div class="row">
+      <button type="button" id="win-new" class="primary">New Scramble</button>
+      <button type="button" class="secondary" data-close>Admire it</button>
+    </div>
+  </dialog>
+
+  <dialog id="share-dialog" aria-labelledby="share-title">
+    <h2 id="share-title">Scan to play</h2>
+    <div id="qr" class="qr" role="img"></div>
+    <p id="share-url" class="url"></p>
+    <p id="share-local" class="sub" hidden>This is a local file address, so phones can't open it. Publish to GitHub Pages first, then share that link.</p>
+    <div class="row">
+      <button type="button" id="copy-link" class="secondary">Copy link</button>
+      <button type="button" class="primary" data-close>Close</button>
+    </div>
+  </dialog>
+
+  <dialog id="test-dialog" aria-labelledby="test-title">
+    <h2 id="test-title">Self-test</h2>
+    <p id="test-summary"></p>
+    <ul id="test-results" class="tests"></ul>
+    <div class="row"><button type="button" class="primary" data-close>Close</button></div>
+  </dialog>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
